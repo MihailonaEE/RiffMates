@@ -10,24 +10,28 @@
         {% for musician in musicians %}
         <li>
             <a href="{% url 'musician' musician.id %}">
-                {{ musician.last_name }}, {{ musician.first_name }}
+                {{ musician.last_name }}, {{ musician.first_name }} (born {{ musician.birth|date:"Y-m-d" }})
             </a>
+            - Member of:
+            {% for band in musician.band_set.all %}
+                <a href="{% url 'band' band.id %}">{{ band.name }}</a>{% if not forloop.last %}, {% endif %}
+            {% empty %}
+                No bands
+            {% endfor %}
         </li>
         {% empty %}
-        <li>
-            <i>No musicians in the database</i>
-        </li>
+        <li><i>No musicians in the database</i></li>
         {% endfor %}
-        
-        {% if page.has_other_pages %}
+    </ul>
+
+    {% if page.has_other_pages %}
+        <div class="pagination">
             {% if page.has_previous %}
-             <a href="{% url 'musicians' %}?page={{page.previous_page_number}}"
-             >Prev</a> &nbsp;&nbsp;&nbsp;
+                <a href="{% url 'musicians' %}?page={{page.previous_page_number}}">Prev</a> &nbsp;&nbsp;&nbsp;
             {% endif %}
             {% if page.has_next %}
-             <a href="{% url 'musicians' %}?page={{page.next_page_number}}">
-                Next</a>
+                <a href="{% url 'musicians' %}?page={{page.next_page_number}}">Next</a>
             {% endif %}
-        {% endif %}
+        </div>
+    {% endif %}
 {% endblock content %}
-    </ul>
